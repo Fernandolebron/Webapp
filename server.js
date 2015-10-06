@@ -6,8 +6,8 @@ var userRoutes = require('./routes/userroutes');
 var order = require('./routes/orderroutes');
 var ruta = require('./routes/route');
 
-// configure app to use bodyParser()
-// this will let us get the data from a POST
+// configure app
+app.set('SecretKey', 'Abelino Resturante');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
@@ -17,6 +17,7 @@ var port = process.env.PORT || 8080;        // set our port
 // all of our routes will be prefixed with /api
 app.use('/', ruta);
 app.use('/order', order);
+app.use('/user', userRoutes);
 
 // START THE SERVER
 // =============================================================================
