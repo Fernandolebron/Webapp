@@ -6,12 +6,12 @@ db.on('connect', function(err){
 		return console.error('connection error => ' + err);
 
 	// Propiedades del Modelo
-	db.define('user', {
+	var user = db.define('user', {
 		username		: {type: "text", unique: true, size: 20},
 		name			: {type: "text", require: true, size: 50},
 		lastname		: {type: "text", require: true, size: 50},
 		email			: {type: "text", unique: true, size: 30},
-		password		: {type: "text", require: true, size: 75},
+		password		: {type: "text", require: true, size: 200},
 		isAdmin			: {type: "boolean"},
 		passwordReset	: {type: "text"}
 	}, {
@@ -25,5 +25,6 @@ db.on('connect', function(err){
 		}
 	});
 });
+
 
 module.exports = db;
