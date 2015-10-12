@@ -3,7 +3,7 @@
 var express    = require('express');                        // call express
 var router = express.Router();              // get an instance of the express Router
 var Dish = require('../models/dish');
-var jwt = require('jsonwebtoken');
+var jwt = require('json-web-token');
 	
 //	Retornar un plato en específico
 router.post('/dish', function(req, res){

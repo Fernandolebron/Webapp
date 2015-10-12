@@ -4,7 +4,7 @@ var express    = require('express');                        // call express
 var router = express.Router();              // get an instance of the express Router
 var User = require('../models/user');
 var bcrypt = require('bcrypt-nodejs');
-var jwt = require('jsonwebtoken');
+var jwt = require('json-web-token');
 
 router.post('/authenticate', function(req, res){
     
