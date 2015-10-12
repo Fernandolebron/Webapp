@@ -78,7 +78,7 @@ router.post('/create', function(req, res){
 				res.send(err);
 			};
 
-			res.json({message: 'Usuario creado!'});
+			res.json({message: '¡Usuario creado!'});
 		});
 	});
 
