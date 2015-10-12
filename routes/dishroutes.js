@@ -4,14 +4,14 @@ var express    = require('express');                        // call express
 var router = express.Router();              // get an instance of the express Router
 var Dish = require('../models/dish');
 var jwt = require('jsonwebtoken');
-
-//	Lista de todos los Platos.
-router.get('/dishes', function(req, res){
-		Dish.models.dish.find(function(err, dishes){
+	
+//	Retornar un plato en específico
+router.post('/dish', function(req, res){
+		Dish.models.dish.get(req.body.id, function(err, dish){
 			if(err) 
 				return res.send(err);
 
-			res.json(dishes);
+			res.json(dish);
 		});
 	});
 
@@ -46,6 +46,16 @@ router.use(function(req, res, next) {
     
   }
 });
+
+//	Lista de todos los Platos.
+router.get('/dishes', function(req, res){
+		Dish.models.dish.find(function(err, dishes){
+			if(err) 
+				return res.send(err);
+
+			res.json(dishes);
+		});
+	});
 
 //	Creacion de un Plato
 router.post('/create', function(req, res){

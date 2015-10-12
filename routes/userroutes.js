@@ -30,6 +30,16 @@ router.post('/authenticate', function(req, res){
     });
 });
 
+//	Retornar un plato en específico
+router.post('/user', function(req, res){
+		User.models.user.get(req.body.id, function(err, user){
+			if(err) 
+				return res.send(err);
+
+			res.json(user);
+		});
+	});
+
 // route middleware to verify a token
 router.use(function(req, res, next) {
 
