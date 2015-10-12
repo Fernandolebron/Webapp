@@ -90,4 +90,16 @@ router.post('/edit', function(req, res){
 	});
 	
 	
+router.post('/remove', function(req, res){
+		Dish.models.dish.get(req.body.id, function (err, dish) {
+    		dish.remove(function(err){
+    			if (err)
+    				return res.send(err);
+    
+    			res.json({message: '¡Plato eliminado!'});
+    		});
+        });
+	});
+	
+	
 module.exports = router;
