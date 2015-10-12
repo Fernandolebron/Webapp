@@ -5,6 +5,7 @@ var bodyParser = require('body-parser');
 var userRoutes = require('./routes/userroutes');
 var order = require('./routes/orderroutes');
 var ruta = require('./routes/route');
+var dishRoutes = require('./routes/dishroutes');
 
 // configure app
 app.set('SecretKey', 'Abelino Resturante');
@@ -18,6 +19,7 @@ var port = process.env.PORT || 8080;        // set our port
 app.use('/', ruta);
 app.use('/order', order);
 app.use('/user', userRoutes);
+app.use('/dish', dishRoutes);
 
 // START THE SERVER
 // =============================================================================
