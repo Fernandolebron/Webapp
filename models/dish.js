@@ -7,8 +7,8 @@ db.on('connect', function(err){
 
 	// Propiedades del Modelo
 	var dish = db.define('dish', {
-		name			: {type: "text", require: true, size: 50},
-		type		    : {type: "text", require: true, size: 50},
+		name			: {type: "text", require: true, size: 80},
+		type		    : {type: "text", require: true, size: 40},
 	    description		: {type: "text", require: true, size: 50},
 		ingredients		: {type: "text", require: true, size: 200},
 		specialty		: {type: "boolean"},
@@ -18,7 +18,7 @@ db.on('connect', function(err){
 	}, {
 		methods: {
 			fullname: function () {
-				return this.name + ' ' + this.lastname;		
+				return this.name;		
 			}
 		}, 
 		validations: {
@@ -26,6 +26,5 @@ db.on('connect', function(err){
 		}
 	});
 });
-
 
 module.exports = db;
