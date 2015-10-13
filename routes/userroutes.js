@@ -4,10 +4,9 @@ var express    = require('express');                        // call express
 var router = express.Router();              // get an instance of the express Router
 var User = require('../models/user');
 var bcrypt = require('bcrypt-nodejs');
-var jwt = require('json-web-token');
+var jwt = require('jsonwebtoken');
 
 router.post('/authenticate', function(req, res){
-    
     User.models.user.find({ username: req.body.username}, function(err, user){
         if (err) 
         	throw err;
@@ -24,7 +23,8 @@ router.post('/authenticate', function(req, res){
             res.json({
               success: true,
               message: 'Enjoy your token!',
-              token: token
+              token: token,
+              user:  user
             });
         }
     });
@@ -39,6 +39,25 @@ router.get('/one/:id', function(req, res){
 				return res.send(err);
 
 			res.json(user);
+		});
+	});
+	
+router.post('/create', function(req, res){
+		var user = new User.models.user();
+
+		user.username	= req.body.username;
+		user.name		= req.body.name;
+		user.lastname	= req.body.lastname;
+		user.email		= req.body.email;
+		user.password	= bcrypt.hashSync(req.body.password);
+		user.isAdmin	= req.body.isAdmin;
+
+		user.save(function(err){
+			if (err) {
+				res.send(err);
+			};
+
+			res.json({message: '¡Usuario creado!'});
 		});
 	});
 
@@ -74,25 +93,6 @@ router.use(function(req, res, next) {
   }
 });
 
-
-router.post('/create', function(req, res){
-		var user = new User.models.user();
-
-		user.username	= req.body.username;
-		user.name		= req.body.name;
-		user.lastname	= req.body.lastname;
-		user.email		= req.body.email;
-		user.password	= bcrypt.hashSync(req.body.password);
-		user.isAdmin	= req.body.isAdmin;
-
-		user.save(function(err){
-			if (err) {
-				res.send(err);
-			};
-
-			res.json({message: '¡Usuario creado!'});
-		});
-	});
 
 router.get('/getall', function(req, res){
 		User.models.user.find(function(err, users){

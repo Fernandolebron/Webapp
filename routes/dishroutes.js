@@ -3,7 +3,7 @@
 var express    = require('express');                        // call express
 var router = express.Router();              // get an instance of the express Router
 var Dish = require('../models/dish');
-var jwt = require('json-web-token');
+var jwt = require('jsonwebtoken');
 	
 // route middleware to verify a token
 router.use(function(req, res, next) {
