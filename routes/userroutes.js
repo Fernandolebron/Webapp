@@ -222,5 +222,33 @@ router.get('/getall', function(req, res){
 		});
 	});
 	
+/**
+    Actualiza un usuario
+    @author Jose Reyes
+*/
+router.put('/edit/:id', function(req, res){
+		User.models.user.get(req.params.id, function(err, user){
+			if(err) 
+				return res.send(err);
+				
+				user.username = req.body.username;
+				user.name = req.body.name;
+				user.lastname = req.body.lastname;
+				user.email = req.body.email;
+				user.password = bcrypt.hashSync(req.body.password);
+				user.isAdmin = req.body.isAdmin;
+				user.passwordReset = req.body.passwordReset;
+				
+				user.save(function(err){
+  			if (err) {
+  				res.send(err);
+  			};
+  
+  			res.json({message: '¡Usuario creado!'});
+  		});
+  		
+		});
+	});
+	
 	
 module.exports = router;
