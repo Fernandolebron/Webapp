@@ -1,5 +1,5 @@
 var orm	= require ("orm");
-var db = orm.connect('mysql://' + process.env.C9_USER + ':@' +  process.env.IP + ':3306/c9');
+var db = orm.connect('mysql://' + process.env.C9_USER + ':@' +  process.env.IP + ':3306/abelinos');
 
 db.on('connect', function(err){
 	if (err)
@@ -7,6 +7,7 @@ db.on('connect', function(err){
 
 	// Propiedades del Modelo
 	var dish = db.define('dish', {
+		id				: {type: "serial", key: true}, // auto increment :)
 		name			: {type: "text", require: true, size: 80},
 		type		    : {type: "text", require: true, size: 40},
 	    description		: {type: "text", require: true, size: 50},
@@ -22,7 +23,7 @@ db.on('connect', function(err){
 			}
 		}, 
 		validations: {
-			name: orm.enforce.unique("Este plato ya existe")
+			id: orm.enforce.unique("Este plato ya existe")
 		}
 	});
 });

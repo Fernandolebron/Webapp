@@ -1,5 +1,5 @@
 var orm	= require ("orm");
-var db = orm.connect('mysql://' + process.env.C9_USER + ':@' +  process.env.IP + ':3306/c9');
+var db = orm.connect('mysql://' + process.env.C9_USER + ':@' +  process.env.IP + ':3306/abelinos');
 
 db.on('connect', function(err){
 	if (err)
