@@ -13,7 +13,7 @@ db.on('connect', function(err){
 		email			: {type: "text", unique: true, size: 30},
 		password		: {type: "text", require: true, size: 200},
 		isAdmin			: {type: "boolean"},
-		passwordReset	: {type: "text"}
+		passwordReset	: {type: "text", unique: true}
 	}, {
 		methods: {
 			fullname: function () {
@@ -24,6 +24,8 @@ db.on('connect', function(err){
 			username: orm.enforce.unique("Cuenta de Usuario ya existe")
 		}
 	});
+	
+	user.sync();
 });
 
 module.exports = db;

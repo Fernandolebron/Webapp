@@ -1,10 +1,21 @@
 
-// call the packages we need
-var express    = require('express');                        // call express
-var router = express.Router();              // get an instance of the express Router
-var User = require('../models/user');
+// Instancia del express
+var express    = require('express');       
+// Instancia del router de express
+var router = express.Router();
+// Instancia del módulo para encriptar la contraseña
 var bcrypt = require('bcrypt-nodejs');
+// Instancia del módulo encargado de generar los tokens para la autentificación
 var jwt = require('jsonwebtoken');
+// Instancia del módulo que genera un token aleatorio para resetear la contraseña
+var crypto = require('crypto');
+// Instancia del módulo encargado de enviar correos
+var nodemailer = require('nodemailer'); 
+// Referencia al modelo de usuarios
+var User = require('../models/user');
+// Link del cliente web del sistema
+var webresetURL = 'https://abelinorest-gogims.c9.io/';
+
 
 router.post('/authenticate', function(req, res){
     User.models.user.find({ username: req.body.username}, function(err, user){
@@ -16,7 +27,7 @@ router.post('/authenticate', function(req, res){
         }
         else {
           var token = jwt.sign(user, 'SecretKey', {
-              expiresInMinutes: 1440 // expires in 24 hours
+              expiresIn: 86400 // expires in 24 hours
             });
     
             // return the information including token as JSON
@@ -30,15 +41,101 @@ router.post('/authenticate', function(req, res){
     });
 });
 
-//	Retornar un usuario en específico
-router.get('/one/:id', function(req, res){
-  console.log('using show dish');
+router.post('/forgotpassword', function(req, res){
+    User.models.user.find({ email: req.body.email}, function(err, user){
+        if (err) 
+        	throw err;
+    
+        if (user.length == 0) {
+          res.json({ success: false, message: '¡Usuario no existe!' });
+        }
+        else {
+          crypto.randomBytes(48, function(ex, buf) {
+            var tokenpassword = buf.toString('hex');
+            user[0].passwordReset = tokenpassword;
+            
+            user[0].save(function(err){
+        			if (err) {
+        				res.send(err);
+        			};
+        			
+        			// create reusable transporter object using SMTP transport
+              var transporter = nodemailer.createTransport({
+                  service: 'Gmail',
+                  auth: {
+                      user: 'abelinorestaurante@gmail.com',
+                      pass: 'abelinorestaurante123'
+                  }
+              });
+              
+              var resetlink = webresetURL + tokenpassword;
+              
+              // setup e-mail data with unicode symbols
+              var mailOptions = {
+                  from: 'Abelino Restuarante <abelinorestaurante@gmail.com>', // sender address
+                  to: user[0].email, // list of receivers
+                  subject: 'Abelino Restuarante: Reset Passoword', // Subject line
+                  text: 'Para resetear su contraseña utilizar este link:' + resetlink, // plaintext body
+                  html: 'Para resetear su contraseña utilizar este <a href="' + resetlink + '">link</a>' // html body
+              };
+              
+              // send mail with defined transport object
+              transporter.sendMail(mailOptions, function(error, info){
+                  if(error){
+                      return console.log(error);
+                  }
+                  console.log('Message sent: ' + info.response);
+                  res.json({success: true});
+              
+              });
+        		});
+          });
+        }
+      });
+});
+
+router.get('/reset/:token', function(req, res){
+  User.models.user.find({passwordReset: req.params.token},function(err, user){
+			if(err) 
+				return res.send(err);
+
+			if (user.length > 0) {
+			  res.json({success: true});
+			}
+			
+			  res.json({success: false});
+		});
+});
+
+router.put('/reset/:token', function(req, res){
+  User.models.user.find({passwordReset: req.params.token},function(err, user){
+			if(err) 
+				return res.send(err);
+
+			if (user.length > 0) {
+			  res.json({success: true, user: user[0]});
+			}
+			
+			  res.json({success: false});
+		});
+});
+
+//	Actualizar la contraseña
+router.put('/editpassword/:id', function(req, res){
 	console.log('asking for -> ' + req.params.id);
 		User.models.user.get(req.params.id, function(err, user){
 			if(err) 
 				return res.send(err);
 
-			res.json(user);
+			user.password = bcrypt.hashSync(req.body.password);
+			
+			user.save(function(err){
+  			if (err) {
+  				res.send(err);
+  			};
+  
+  			res.json({message: '¡Contraseña actualizada!'});
+  		});
 		});
 	});
 	
