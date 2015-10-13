@@ -30,9 +30,11 @@ router.post('/authenticate', function(req, res){
     });
 });
 
-//	Retornar un plato en específico
-router.post('/user', function(req, res){
-		User.models.user.get(req.body.id, function(err, user){
+//	Retornar un usuario en específico
+router.get('/one/:id', function(req, res){
+  console.log('using show dish');
+	console.log('asking for -> ' + req.params.id);
+		User.models.user.get(req.params.id, function(err, user){
 			if(err) 
 				return res.send(err);
 
