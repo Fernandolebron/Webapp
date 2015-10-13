@@ -197,6 +197,19 @@ router.use(function(req, res, next) {
 });
 
 /**
+    Devuelve a un usuario del sistema
+    @author Jose Reyes
+*/
+router.get('/get/:id', function(req, res){
+		User.models.user.get(req.params.id, function(err, user){
+			if(err) 
+				return res.send(err);
+
+			res.json(user);
+		});
+	});
+
+/**
     Devuelve todos los usuarios del sistema
     @author Jose Reyes
 */
