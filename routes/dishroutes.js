@@ -39,9 +39,10 @@ router.use(function(req, res, next) {
 });
 
 //	Retornar un plato en específico
-router.get('/one', function(req, res){
+router.get('/one/:id', function(req, res) {
 	console.log('using show dish');
-	Dish.models.dish.get(req.body.id, function(err, dish){
+	console.log('asking for -> ' + req.params.id);
+	Dish.models.dish.get(req.params.id, function(err, dish){
 		if(err) 
 			return res.send(err);
 
@@ -55,8 +56,11 @@ router.get('/dishes', function(req, res){
 	Dish.models.dish.find(function(err, dishes){
 		if(err) 
 			return res.send(err);
+		
+		//console.log(dishes);
 
-		res.json(dishes);
+		//res.json(dishes);
+		res.send(dishes);
 	});
 });
 
@@ -68,7 +72,6 @@ router.post('/create', function(req, res){
 	dish.name = req.body.name;
 	dish.type = req.body.type;
 	dish.description = req.body.description;
-	dish.ingredients = req.body.ingredients;
 	dish.speciality = req.body.speciality;
 	dish.favoriteChef = req.body.favoriteChef;
 	dish.price = req.body.price;
@@ -83,16 +86,16 @@ router.post('/create', function(req, res){
 });
 	
 //	Edicion de un Plato
-router.put('/edit', function(req, res){
+router.put('/edit/:id', function(req, res){
 	console.log('using edit dish');
-	Dish.models.dish.get(req.body.id, function (err, dish) {
+	console.log('asking for -> ' + req.params.id);
+	Dish.models.dish.get(req.params.id, function (err, dish) {
         if (err)
         	return res.send(err);
         else {
         	dish.name = req.body.name;
 			dish.type = req.body.type;
 			dish.description = req.body.description;
-			dish.ingredients = req.body.ingredients;
 			dish.speciality = req.body.speciality;
 			dish.favoriteChef = req.body.favoriteChef;
 			dish.price = req.body.price;
@@ -109,9 +112,10 @@ router.put('/edit', function(req, res){
 });
 	
 	
-router.delete('/remove', function(req, res){
+router.delete('/remove/:id', function(req, res){
 	console.log('using remove dish');
-	Dish.models.dish.get(req.body.id, function (err, dish) {
+	console.log('asking for -> ' + req.params.id);
+	Dish.models.dish.get(req.params.id, function (err, dish) {
 		if (err)
 			return res.send(err);
 		else {

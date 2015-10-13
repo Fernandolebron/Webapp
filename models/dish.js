@@ -11,7 +11,6 @@ db.on('connect', function(err){
 		name			: {type: "text", require: true, size: 80},
 		type		    : {type: "text", require: true, size: 40},
 	    description		: {type: "text", require: true, size: 50},
-		ingredients		: {type: "text", require: true, size: 200},
 		specialty		: {type: "boolean"},
 		cheffavorite	: {type: "boolean"},
 		price           : {type: "number"},
