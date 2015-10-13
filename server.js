@@ -1,10 +1,14 @@
-// call the packages we need
-var express    = require('express');        // call express
-var app        = express();                 // define our app using express
+// Referencia del express
+var express    = require('express');
+// Instancia del express
+var app        = express();
+// Referencia del bodyparser
 var bodyParser = require('body-parser');
+// Referencia de las rutas de usuarios
 var userRoutes = require('./routes/userroutes');
+// Referencia de las rutas de las órdenes
 var order = require('./routes/orderroutes');
-var ruta = require('./routes/route');
+// Referencia de las rutas de los platos
 var dishRoutes = require('./routes/dishroutes');
 
 // configure app
@@ -12,16 +16,15 @@ app.set('SecretKey', 'Abelino Resturante');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-var port = process.env.PORT || 8080;        // set our port
+// Asigna puerto
+var port = process.env.PORT || 8080;
 
 // REGISTER OUR ROUTES -------------------------------
-// all of our routes will be prefixed with /api
-app.use('/', ruta);
 app.use('/order', order);
 app.use('/user', userRoutes);
 app.use('/dish', dishRoutes);
 
-// START THE SERVER
+// INICIA SERVIDOR
 // =============================================================================
 app.listen(port);
 console.log('Magic happens on port ' + port);

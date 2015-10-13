@@ -1,4 +1,3 @@
-
 // Instancia del express
 var express    = require('express');       
 // Instancia del router de express
@@ -16,7 +15,10 @@ var User = require('../models/user');
 // Link del cliente web del sistema
 var webresetURL = 'https://abelinorest-gogims.c9.io/';
 
-
+/**
+    Verifica que el token mandado por el cliente es válido
+    @author Jose Reyes
+*/
 router.post('/authenticate', function(req, res){
     User.models.user.find({ username: req.body.username}, function(err, user){
         if (err) 
@@ -26,7 +28,7 @@ router.post('/authenticate', function(req, res){
           res.json({ success: false, message: 'Authentication failed.' });
         }
         else {
-          var token = jwt.sign(user, 'SecretKey', {
+          var token = jwt.sign(user[0], 'SecretKey', {
               expiresIn: 86400 // expires in 24 hours
             });
     
@@ -35,12 +37,16 @@ router.post('/authenticate', function(req, res){
               success: true,
               message: 'Enjoy your token!',
               token: token,
-              user:  user
+              user:  user[0]
             });
         }
     });
 });
 
+/**
+    Envía un correo con el link para resetear su usuario
+    @author Jose Reyes
+*/
 router.post('/forgotpassword', function(req, res){
     User.models.user.find({ email: req.body.email}, function(err, user){
         if (err) 
@@ -94,20 +100,11 @@ router.post('/forgotpassword', function(req, res){
       });
 });
 
+/**
+    Confirma que el token para resetear la contraseña es válido
+    @author Jose Reyes
+*/
 router.get('/reset/:token', function(req, res){
-  User.models.user.find({passwordReset: req.params.token},function(err, user){
-			if(err) 
-				return res.send(err);
-
-			if (user.length > 0) {
-			  res.json({success: true});
-			}
-			
-			  res.json({success: false});
-		});
-});
-
-router.put('/reset/:token', function(req, res){
   User.models.user.find({passwordReset: req.params.token},function(err, user){
 			if(err) 
 				return res.send(err);
@@ -120,7 +117,10 @@ router.put('/reset/:token', function(req, res){
 		});
 });
 
-//	Actualizar la contraseña
+/**
+    Actualizar la contraseña
+    @author Jose Reyes
+*/
 router.put('/editpassword/:id', function(req, res){
 	console.log('asking for -> ' + req.params.id);
 		User.models.user.get(req.params.id, function(err, user){
@@ -139,6 +139,10 @@ router.put('/editpassword/:id', function(req, res){
 		});
 	});
 	
+/**
+    Crea un usuario nuevo
+    @author Jose Reyes
+*/
 router.post('/create', function(req, res){
 		var user = new User.models.user();
 
@@ -158,9 +162,11 @@ router.post('/create', function(req, res){
 		});
 	});
 
-// route middleware to verify a token
+/**
+    route middleware to verify a token
+    @author Jose Reyes
+*/
 router.use(function(req, res, next) {
-
   // check header or url parameters or post parameters for token
   var token = req.body.token || req.query.token || req.headers['x-access-token'];
 
@@ -190,7 +196,10 @@ router.use(function(req, res, next) {
   }
 });
 
-
+/**
+    Devuelve todos los usuarios del sistema
+    @author Jose Reyes
+*/
 router.get('/getall', function(req, res){
 		User.models.user.find(function(err, users){
 			if(err) 

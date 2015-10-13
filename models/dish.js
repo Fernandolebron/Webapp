@@ -1,6 +1,9 @@
+// Referencia del ORM utilizado para acceder a MYSQL
 var orm	= require ("orm");
+// Connección a la BD MySQL
 var db = orm.connect('mysql://' + process.env.C9_USER + ':@' +  process.env.IP + ':3306/abelinos');
 
+// Define la clase plato de la base de datos
 db.on('connect', function(err){
 	if (err)
 		return console.error('connection model error => ' + err);
@@ -16,11 +19,6 @@ db.on('connect', function(err){
 		price           : {type: "number"},
 		image           : {type: "text", size: 160}
 	}, {
-		methods: {
-			fullname: function () {
-				return this.name;		
-			}
-		}, 
 		validations: {
 			id: orm.enforce.unique("Este plato ya existe")
 		}

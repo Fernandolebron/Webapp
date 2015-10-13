@@ -5,7 +5,10 @@ var router = express.Router();              // get an instance of the express Ro
 var Dish = require('../models/dish');
 var jwt = require('jsonwebtoken');
 	
-// route middleware to verify a token
+/**
+    route middleware to verify a token
+    @author Jose Reyes
+*/
 router.use(function(req, res, next) {
 	console.log('using dish controller');
 	// check header or url parameters or post parameters for token
@@ -35,7 +38,10 @@ router.use(function(req, res, next) {
 	next();
 });
 
-//	Retornar un plato en específico
+/**
+    Retornar un plato en específico
+    @author Fernando Lebrón
+*/
 router.get('/one/:id', function(req, res) {
 	console.log('using show dish');
 	console.log('asking for -> ' + req.params.id);
@@ -47,7 +53,10 @@ router.get('/one/:id', function(req, res) {
 	});
 });
 
-//	Lista de todos los Platos.
+/**
+    Lista de todos los Platos.
+    @author Fernando Lebrón
+*/
 router.get('/dishes', function(req, res){
 	console.log('using all dishes');
 	Dish.models.dish.find(function(err, dishes){
@@ -61,7 +70,10 @@ router.get('/dishes', function(req, res){
 	});
 });
 
-//	Creacion de un Plato
+/**
+    Creacion de un Plato
+    @author Fernando Lebrón
+*/
 router.post('/create', function(req, res){
 	console.log('using create dish');
 	var dish = new Dish.models.dish();
@@ -82,7 +94,10 @@ router.post('/create', function(req, res){
 	});
 });
 	
-//	Edicion de un Plato
+/**
+    Edicion de un Plato
+    @author Fernando Lebrón
+*/
 router.put('/edit/:id', function(req, res){
 	console.log('using edit dish');
 	console.log('asking for -> ' + req.params.id);
@@ -107,8 +122,11 @@ router.put('/edit/:id', function(req, res){
         }
     });
 });
-	
-	
+
+/**
+    Eliminar un plato	
+    @author Fernando Lebrón
+*/
 router.delete('/remove/:id', function(req, res){
 	console.log('using remove dish');
 	console.log('asking for -> ' + req.params.id);

@@ -1,6 +1,7 @@
-// call the packages we need
-var express    = require('express');        // call express
-var router = express.Router();              // get an instance of the express Router
+// Instancia del express
+var express    = require('express');       
+// Instancia del router de express
+var router = express.Router();
 
 router.use(function(req, res, next) {
   console.log('Something is happening.');
