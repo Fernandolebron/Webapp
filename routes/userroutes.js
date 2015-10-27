@@ -20,6 +20,8 @@ var webresetURL = 'https://abelinorest-gogims.c9.io/';
     @author Jose Reyes
 */
 router.post('/authenticate', function(req, res){
+    console.log('authenticating user ' + req.body.username);
+    
     User.models.user.find({ username: req.body.username}, function(err, user){
         if (err) 
         	throw err;
@@ -31,6 +33,8 @@ router.post('/authenticate', function(req, res){
           var token = jwt.sign(user[0], 'SecretKey', {
               expiresIn: 86400 // expires in 24 hours
             });
+            
+            console.log('Autenficiado el usuario ' + user[0].username );
     
             // return the information including token as JSON
             res.json({
@@ -48,6 +52,8 @@ router.post('/authenticate', function(req, res){
     @author Jose Reyes
 */
 router.post('/forgotpassword', function(req, res){
+    console.log('asking for reset password ' + req.body.email);
+    
     User.models.user.find({ email: req.body.email}, function(err, user){
         if (err) 
         	throw err;
@@ -105,6 +111,8 @@ router.post('/forgotpassword', function(req, res){
     @author Jose Reyes
 */
 router.get('/reset/:token', function(req, res){
+  console.log('reseting password of user #' + req.params.id);
+  
   User.models.user.find({passwordReset: req.params.token},function(err, user){
 			if(err) 
 				return res.send(err);
@@ -122,7 +130,8 @@ router.get('/reset/:token', function(req, res){
     @author Jose Reyes
 */
 router.put('/editpassword/:id', function(req, res){
-	console.log('asking for -> ' + req.params.id);
+	  console.log('editing password of user #' + req.params.id);
+	
 		User.models.user.get(req.params.id, function(err, user){
 			if(err) 
 				return res.send(err);
@@ -144,8 +153,9 @@ router.put('/editpassword/:id', function(req, res){
     @author Jose Reyes
 */
 router.post('/create', function(req, res){
+    console.log('creating user');
+    
 		var user = new User.models.user();
-
 		user.username	= req.body.username;
 		user.name		= req.body.name;
 		user.lastname	= req.body.lastname;
@@ -201,6 +211,8 @@ router.use(function(req, res, next) {
     @author Jose Reyes
 */
 router.get('/get/:id', function(req, res){
+    console.log('returning user #' + req.params.id );
+    
 		User.models.user.get(req.params.id, function(err, user){
 			if(err) 
 				return res.send(err);
@@ -214,6 +226,8 @@ router.get('/get/:id', function(req, res){
     @author Jose Reyes
 */
 router.get('/getall', function(req, res){
+    console.log('returning all users');
+  
 		User.models.user.find(function(err, users){
 			if(err) 
 				return res.send(err);
@@ -227,6 +241,8 @@ router.get('/getall', function(req, res){
     @author Jose Reyes
 */
 router.put('/edit/:id', function(req, res){
+    console.log('editing user #' + req.params.id);
+    
 		User.models.user.get(req.params.id, function(err, user){
 			if(err) 
 				return res.send(err);
@@ -244,7 +260,7 @@ router.put('/edit/:id', function(req, res){
   				res.send(err);
   			};
   
-  			res.json({message: '¡Usuario creado!'});
+  			res.json({message: '¡Usuario editado!'});
   		});
   		
 		});

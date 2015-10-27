@@ -10,13 +10,12 @@ db.on('connect', function(err){
 
 	// Propiedades del Modelo
 	var dish = db.define('dish', {
-		id				: {type: "serial", key: true}, // auto increment :)
 		name			: {type: "text", require: true, size: 80},
 		type		    : {type: "text", require: true, size: 40},
 	    description		: {type: "text", require: true, size: 50},
 		specialty		: {type: "boolean"},
 		cheffavorite	: {type: "boolean"},
-		price           : {type: "number"},
+		price           : {type: "integer"},
 		image           : {type: "text", size: 160}
 	}, {
 		validations: {
