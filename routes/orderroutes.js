@@ -5,6 +5,22 @@ var Order = require('../models/order');
 var jwt = require('jsonwebtoken');
 
 /**
+    Lista de todos las ordenes a partir del id del cliente.
+    @author Jose Reyes
+*/
+router.get('/:idclient', function(req, res){
+	console.log('asking all orders with id client ' + req.params.idclient);
+	
+	Order.models.order.find({ClientDocID: req.params.idclient}, function(err, orders){
+		if(err){
+			return res.send(err);
+		}
+		
+		res.json(orders);
+	});
+});
+
+/**
     route middleware to verify a token
     @author Jose Reyes
 */
@@ -38,9 +54,85 @@ router.use(function(req, res, next) {
 	next();
 });
 
-// test route to make sure everything is working (accessed at GET http://localhost:8080/api)
-router.get('/test', function(req, res) {
-    res.json({ message: 'test' });   
+/**
+    Lista de todos las ordenes.
+    @author Jose Reyes
+*/
+router.get('/getall', function(req, res){
+	console.log('asking all orders');
+	
+	Order.models.order.find(function(err, orders){
+		if(err){
+			return res.send(err);
+		}
+		
+		res.json(orders);
+	});
+});
+
+/**
+    Lista de todos las ordenes a partir de un estado.
+    @author Jose Reyes
+*/
+router.get('/status/:orderstatus', function(req, res){
+	console.log('asking all orders with status ' + req.params.orderstatus);
+	
+	Order.models.order.find({Status: req.params.orderstatus}, function(err, orders){
+		if(err){
+			return res.send(err);
+		}
+		
+		res.json(orders);
+	});
+});
+
+/**
+    Creacion de una orden
+    @author Jose Reyes
+*/
+router.post('/', function(req, res){
+	console.log('creating an order');
+	
+ 	var order = new Order.models.dish();
+ 	order.ClientDocID = req.body.clientID;
+ 	order.ClientEmail = req.body.email;
+ 	order.ClientPhone = req.body.telephone;
+ 	order.Status = 1;
+ 	order.Price = req.body.price;
+ 	order.Taxes = req.body.taxes;
+ 	order.CreditCardType = req.body.card;
+ 	order.Address = req.body.address;
+	order.dishes = req.body.dishes;
+	
+	order.save(function(err){
+		if (err)
+			return res.send(err);
+
+		res.json({message: '¡Orden creada!'});
+	});
+});
+
+/**
+    Edicion de un estado de una orden
+    @author Fernando Lebrón
+*/
+router.put('/:id/:orderstatus', function(req, res){
+	console.log('editing order #' + req.params.id + 'with status ' + req.params.orderstatus);
+	
+	Order.models.order.get(req.params.id, function (err, order) {
+        if (err)
+        	return res.send(err);
+        else {
+        	order.Status = req.params.orderstatus;
+			
+    			order.save(function(err){
+    				if (err)
+    					return res.send(err);
+    	
+    				res.json({message: '¡Estado de orden editado!'});
+    			});
+        }
+    });
 });
 
 module.exports = router;

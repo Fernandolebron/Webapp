@@ -30,7 +30,7 @@ db.on('connect', function(err){
 		}
 	});
 	
-	order.hasMany('dish', Dish.models.dish, { dishName: String, status: Number }, { reverse: 'orders', key: true })
+	order.hasMany('dishes', Dish.models.dish, { dishName: String, status: Number }, { reverse: 'orders', key: true })
 	
 	order.sync();
 });
