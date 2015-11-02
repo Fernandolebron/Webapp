@@ -20,9 +20,9 @@ app.use(bodyParser.json());
 var port = process.env.PORT || 8080;
 
 // REGISTER OUR ROUTES -------------------------------
-app.use('/order', order);
 app.use('/user', userRoutes);
 app.use('/dish', dishRoutes);
+app.use('/order', order);
 
 // INICIA SERVIDOR
 // =============================================================================

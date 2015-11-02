@@ -1,14 +1,14 @@
 {
-    "name": "node-api",
-    "main": "server.js",
-    "dependencies": {
-        "express": "~4.0.0",
-        "orm": "~2.1.27",
-        "bcrypt-nodejs": "0.0.3",
-        "jsonwebtoken": "5.4.0",
-        "body-parser": "~1.0.1",
-        "mysql": "2.0.0-alpha9",
-        "crypto": "0.0.3",
-        "nodemailer": "1.8.0"
-    }
+  "name": "node-api",
+  "main": "server.js",
+  "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
+    "body-parser": "~1.0.1",
+    "crypto": "0.0.3",
+    "express": "~4.0.0",
+    "jsonwebtoken": "5.4.0",
+    "mysql": "2.0.0-alpha9",
+    "nodemailer": "1.8.0",
+    "sequelize": "^3.13.0"
+  }
 }

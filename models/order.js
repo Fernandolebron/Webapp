@@ -1,38 +1,31 @@
-// Referencia del ORM utilizado para acceder a MYSQL
-var orm	= require ("orm");
-// Connección a la BD MySQL
-var db = orm.connect('mysql://' + process.env.C9_USER + ':@' +  process.env.IP + ':3306/abelinos');
+var Sequelize = require('sequelize');
 var Dish = require('../models/dish');
 
-// Define la clase usuario de la base de datos
-db.on('connect', function(err){
-	if (err)
-		return console.error('connection error => ' + err);
+// Connección a la BD MySQL
+var sequelize = new Sequelize('mysql://' + process.env.C9_USER + ':@' +  process.env.IP + ':3306/abelinos');
 
-	// Propiedades del Modelo
-	var order = db.define('order', {
-		ClientDocID		: {type: "text"},
-		ClientEmail		: {type: "text", size: 100},
-		ClientPhone		: {type: "text", size: 15},
-		Status			: {type: "integer"},
-		Price			: {type: "number"},
-		Taxes			: {type: "number"},
-		CreditCardType	: {type: "text"},
-		Address     	: {type: "text"}
-	}, {
-		methods: {
-			fullname: function () {
-				return this.name + ' ' + this.lastname;		
-			}
-		}, 
-		validations: {
-			username: orm.enforce.unique("Cuenta de Usuario ya existe")
-		}
-	});
-	
-	order.hasMany('dishes', Dish.models.dish, { dishName: String, status: Number }, { reverse: 'orders', key: true })
-	
-	order.sync();
+var order = sequelize.define('orders', {
+	ClientDocID: {type: Sequelize.STRING(20), allowNull: false},
+	ClientEmail: {type: Sequelize.STRING(100)},
+	ClientPhone: {type: Sequelize.STRING(15)},
+	Status: {type: Sequelize.INTEGER, defaultValue: 1},
+	Price: {type: Sequelize.FLOAT},
+	Taxes: {type: Sequelize.FLOAT, defaultValue: 0.28},
+	Address: {type: Sequelize.STRING},
+	CreditCardType: {type: Sequelize.STRING},
+	LocalOrder: {type: Sequelize.BOOLEAN},
+},{
+  freezeTableName: true // Model tableName will be the same as the model name
 });
 
-module.exports = db;
+var OrdersDish = sequelize.define('OrdersDish', {
+    id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true},
+    status: {type: Sequelize.INTEGER, defaultValue: 1},
+    amount: {type: Sequelize.INTEGER, defaultValue: 1}
+});
+
+order.belongsToMany(Dish, {through: OrdersDish});
+OrdersDish.sync();
+order.sync();
+
+module.exports = order;

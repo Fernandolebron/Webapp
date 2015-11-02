@@ -22,26 +22,23 @@ var webresetURL = 'https://abelinorest-gogims.c9.io/';
 router.post('/authenticate', function(req, res){
     console.log('authenticating user ' + req.body.username);
     
-    User.models.user.find({ username: req.body.username}, function(err, user){
-        if (err) 
-        	throw err;
-    
-        if (user.length == 0 || !bcrypt.compareSync(req.body.password, user[0].password)) {
+    User.findOne({ where: { username: req.body.username}}).then(function(user){
+        if (user == null || !bcrypt.compareSync(req.body.password, user.password)) {
           res.json({ success: false, message: 'Authentication failed.' });
         }
         else {
-          var token = jwt.sign(user[0], 'SecretKey', {
+          var token = jwt.sign(user, 'SecretKey', {
               expiresIn: 86400 // expires in 24 hours
             });
             
-            console.log('Autenficiado el usuario ' + user[0].username );
+            console.log('Autenficiado el usuario ' + user.username );
     
             // return the information including token as JSON
             res.json({
               success: true,
               message: 'Enjoy your token!',
               token: token,
-              user:  user[0]
+              user:  user
             });
         }
     });
@@ -54,23 +51,16 @@ router.post('/authenticate', function(req, res){
 router.post('/forgotpassword', function(req, res){
     console.log('asking for reset password ' + req.body.email);
     
-    User.models.user.find({ email: req.body.email}, function(err, user){
-        if (err) 
-        	throw err;
-    
-        if (user.length == 0) {
+    User.findOne({ where: { email: req.body.email}}).then(function(user){
+        if (user != null) {
           res.json({ success: false, message: '¡Usuario no existe!' });
         }
         else {
           crypto.randomBytes(48, function(ex, buf) {
             var tokenpassword = buf.toString('hex');
-            user[0].passwordReset = tokenpassword;
+            user.passwordReset = tokenpassword;
             
-            user[0].save(function(err){
-        			if (err) {
-        				res.send(err);
-        			};
-        			
+            user.save().then(function(){
         			// create reusable transporter object using SMTP transport
               var transporter = nodemailer.createTransport({
                   service: 'Gmail',
@@ -85,7 +75,7 @@ router.post('/forgotpassword', function(req, res){
               // setup e-mail data with unicode symbols
               var mailOptions = {
                   from: 'Abelino Restuarante <abelinorestaurante@gmail.com>', // sender address
-                  to: user[0].email, // list of receivers
+                  to: user.email, // list of receivers
                   subject: 'Abelino Restuarante: Reset Passoword', // Subject line
                   text: 'Para resetear su contraseña utilizar este link:' + resetlink, // plaintext body
                   html: 'Para resetear su contraseña utilizar este <a href="' + resetlink + '">link</a>' // html body
@@ -94,11 +84,12 @@ router.post('/forgotpassword', function(req, res){
               // send mail with defined transport object
               transporter.sendMail(mailOptions, function(error, info){
                   if(error){
-                      return console.log(error);
+                      console.log(error);
+                      return;
                   }
+                  
                   console.log('Message sent: ' + info.response);
                   res.json({success: true});
-              
               });
         		});
           });
@@ -113,12 +104,9 @@ router.post('/forgotpassword', function(req, res){
 router.get('/reset/:token', function(req, res){
   console.log('reseting password of user #' + req.params.id);
   
-  User.models.user.find({passwordReset: req.params.token},function(err, user){
-			if(err) 
-				return res.send(err);
-
-			if (user.length > 0) {
-			  res.json({success: true, user: user[0]});
+  User.findOne({where: {passwordReset: req.params.token}}).then(function(user){
+			if (user != null) {
+			  res.json({success: true, user: user});
 			}
 			
 			  res.json({success: false});
@@ -132,17 +120,10 @@ router.get('/reset/:token', function(req, res){
 router.put('/editpassword/:id', function(req, res){
 	  console.log('editing password of user #' + req.params.id);
 	
-		User.models.user.get(req.params.id, function(err, user){
-			if(err) 
-				return res.send(err);
-
+		User.findById(req.params.id).then(function(user){
 			user.password = bcrypt.hashSync(req.body.password);
 			
-			user.save(function(err){
-  			if (err) {
-  				res.send(err);
-  			};
-  
+			user.save().then(function(){
   			res.json({message: '¡Contraseña actualizada!'});
   		});
 		});
@@ -155,20 +136,15 @@ router.put('/editpassword/:id', function(req, res){
 router.post('/create', function(req, res){
     console.log('creating user');
     
-		var user = new User.models.user();
-		user.username	= req.body.username;
-		user.name		= req.body.name;
-		user.lastname	= req.body.lastname;
-		user.email		= req.body.email;
-		user.password	= bcrypt.hashSync(req.body.password);
-		user.isAdmin	= req.body.isAdmin;
-
-		user.save(function(err){
-			if (err) {
-				res.send(err);
-			};
-
-			res.json({message: '¡Usuario creado!'});
+		User.create({
+  		username	: req.body.username,
+  		name		: req.body.name,
+  		lastname	: req.body.lastname,
+  		email		: req.body.email,
+  		password	: bcrypt.hashSync(req.body.password),
+  		isAdmin	: req.body.isAdmin
+		}).then(function(user){
+		  res.json({message: '¡Usuario creado!', user: user});
 		});
 	});
 
@@ -182,27 +158,23 @@ router.use(function(req, res, next) {
 
   // decode token
   if (token) {
-
     // verifies secret and checks exp
     jwt.verify(token, 'SecretKey', function(err, decoded) {      
       if (err) {
-        return res.json({ success: false, message: 'Failed to authenticate token.' });    
+        res.json({ success: false, message: 'Failed to authenticate token.' });    
       } else {
         // if everything is good, save to request for use in other routes
         req.decoded = decoded;    
         next();
       }
     });
-
   } else {
-
     // if there is no token
     // return an error
-    return res.status(403).send({ 
+    res.status(403).send({ 
         success: false, 
         message: 'No token provided.' 
     });
-    
   }
 });
 
@@ -213,10 +185,7 @@ router.use(function(req, res, next) {
 router.get('/get/:id', function(req, res){
     console.log('returning user #' + req.params.id );
     
-		User.models.user.get(req.params.id, function(err, user){
-			if(err) 
-				return res.send(err);
-
+		User.findById(req.params.id).then(function(user){
 			res.json(user);
 		});
 	});
@@ -228,10 +197,7 @@ router.get('/get/:id', function(req, res){
 router.get('/getall', function(req, res){
     console.log('returning all users');
   
-		User.models.user.find(function(err, users){
-			if(err) 
-				return res.send(err);
-
+		User.findAll().then(function(users){
 			res.json(users);
 		});
 	});
@@ -243,11 +209,7 @@ router.get('/getall', function(req, res){
 router.put('/edit/:id', function(req, res){
     console.log('editing user #' + req.params.id);
     
-		User.models.user.get(req.params.id, function(err, user){
-			if(err) 
-				return res.send(err);
-				
-				user.username = req.body.username;
+		User.findById(req.params.id).then(function(user){
 				user.name = req.body.name;
 				user.lastname = req.body.lastname;
 				user.email = req.body.email;
@@ -255,12 +217,8 @@ router.put('/edit/:id', function(req, res){
 				user.isAdmin = req.body.isAdmin;
 				user.passwordReset = req.body.passwordReset;
 				
-				user.save(function(err){
-  			if (err) {
-  				res.send(err);
-  			};
-  
-  			res.json({message: '¡Usuario editado!'});
+				user.save().then(function(user){
+    			res.json({message: '¡Usuario editado!', user: user});
   		});
   		
 		});

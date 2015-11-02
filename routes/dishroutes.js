@@ -7,16 +7,12 @@ var jwt = require('jsonwebtoken');
 
 /**
     Lista de todos los Platos.
-    @author Fernando Lebrón
+    @author Jose Reyes
 */
 router.get('/dishes', function(req, res){
 	console.log('asking all dishes');
 	
-	Dish.models.dish.find(function(err, dishes){
-		if(err){
-			return res.send(err);
-		}
-		
+	Dish.findAll().then(function(dishes){
 		res.json(dishes);
 	});
 });
@@ -33,26 +29,25 @@ router.use(function(req, res, next) {
 	
 	// decode token
 	if (token) {
-	// verifies secret and checks exp
-	jwt.verify(token, 'SecretKey', function(err, decoded) {      
-	  if (err) {
-	    return res.json({ success: false, message: 'Failed to authenticate token.' });    
-	  } else {
-	    // if everything is good, save to request for use in other routes
-	    req.decoded = decoded;    
-	    next();
-	  }
-	});
-	
+		// verifies secret and checks exp
+		jwt.verify(token, 'SecretKey', function(err, decoded) {      
+		  if (err) {
+		    res.json({ success: false, message: 'Failed to authenticate token.' });    
+		    return;
+		  } else {
+		    // if everything is good, save to request for use in other routes
+		    req.decoded = decoded;    
+		    next();
+		  }
+		});
 	} else {
 		// if there is no token
 		// return an error
-		return res.status(403).send({ 
+		res.status(403).send({ 
 		    success: false, 
 		    message: 'No token provided.' 
 		});
 	}
-	next();
 });
 
 /**
@@ -62,86 +57,64 @@ router.use(function(req, res, next) {
 router.get('/:id', function(req, res) {
 	console.log('asking for dish ' + req.params.id);
 	
-	Dish.models.dish.get(req.params.id, function(err, dish){
-		if(err) {
-			return res.send(err);
-		}
-
+	Dish.findById(req.params.id).then(function(dish){
 		res.json(dish);
 	});
 });
 
 /**
     Creacion de un Plato
-    @author Fernando Lebrón
+    @author Jose Reyes
 */
 router.post('/create', function(req, res){
 	console.log('creating a dish');
 	
-	var dish = new Dish.models.dish();
-	dish.name = req.body.name;
-	dish.type = req.body.type;
-	dish.description = req.body.description;
-	dish.speciality = req.body.speciality;
-	dish.favoriteChef = req.body.chefFavorite;
-	dish.price = req.body.price;
-	dish.image = req.body.image;
-	
-	dish.save(function(err){
-		if (err)
-			return res.send(err);
-
-		res.json({message: '¡Plato creado!'});
+	Dish.create({
+		name : req.body.name,
+		type : req.body.type,
+		description : req.body.description,
+		specialty : req.body.specialty,
+		chefFavorite : req.body.chefFavorite,
+		price : req.body.price,
+		image : req.body.image
+	}).then(function(dish){
+		res.json({message: '¡Plato creado!', dish: dish});
 	});
 });
 	
 /**
     Edicion de un Plato
-    @author Fernando Lebrón
+    @author Jose Reyes
 */
 router.put('/edit/:id', function(req, res){
 	console.log('editing dish #' + req.params.id);
 	
-	Dish.models.dish.get(req.params.id, function (err, dish) {
-        if (err)
-        	return res.send(err);
-        else {
-        	dish.name = req.body.name;
-			dish.type = req.body.type;
-			dish.description = req.body.description;
-			dish.speciality = req.body.speciality;
-			dish.favoriteChef = req.body.chefFavorite;
-			dish.price = req.body.price;
-			dish.image = req.body.image;
+	Dish.findById(req.params.id).then(function (dish) {
+        dish.name = req.body.name;
+		dish.type = req.body.type;
+		dish.description = req.body.description;
+		dish.specialty = req.body.specialty;
+		dish.chefFavorite = req.body.chefFavorite;
+		dish.price = req.body.price;
+		dish.image = req.body.image;
 			
-			dish.save(function(err){
-				if (err)
-					return res.send(err);
-	
-				res.json({message: '¡Plato editado!'});
-			});
-        }
+		dish.save().then(function(dish){
+			res.json({message: '¡Plato editado!', dish: dish});
+		});
     });
 });
 
 /**
     Eliminar un plato	
-    @author Fernando Lebrón
+    @author Jose Reyes
 */
-router.delete('/delete/:id', function(req, res){
+router.delete('/remove/:id', function(req, res){
 	console.log('deleting dish #' + req.params.id);
 	
-	Dish.models.dish.get(req.params.id, function (err, dish) {
-		if (err)
-			return res.send(err);
-		else {
-			dish.remove(function(err){
-				if (err)
-					return res.send(err);
-		
-				res.json({message: '¡Plato eliminado!'});
-			});
-		}
+	Dish.findById(req.params.id).then(function (dish) {
+		dish.destroy().then(function(){
+			res.json({message: '¡Plato eliminado!'});
+		});
     });
 });
 	
