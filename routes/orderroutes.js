@@ -5,6 +5,8 @@ var Order = require('../models/order');
 var Dish = require('../models/dish');
 var jwt = require('jsonwebtoken');
 var async = require('async');
+var Sequelize = require('sequelize');
+var OrdersDishes = require('../models/orderdishes');
 
 /**
     Lista de todos las ordenes a partir del id del cliente.
@@ -13,39 +15,10 @@ var async = require('async');
 router.get('/checkstatus/:idclient', function(req, res){
 	console.log('asking all orders with id client ' + req.params.idclient);
 		
-	Order.findAll({where: {ClientDocID: req.params.idclient}}).then(function(orders){
+	Order.findAll({where: {clientID: req.params.idclient}}).then(function(orders){
 		res.json(orders);
 	});
 });
-
-function CalculateOcurrence(arr, id) {
-	var total = 0;
-	
-    for ( var i = 0; i < arr.length; i++ ) {
-        if ( arr[i] === id ) {
-            total++;
-        }
-    }
-
-    return total;
-}
-
-function CalculateOcurrence2(arr) {
-	var a = [], b = [], prev;
-
-    arr.sort();
-    for ( var i = 0; i < arr.length; i++ ) {
-        if ( arr[i] !== prev ) {
-            a.push(arr[i]);
-            b.push(1);
-        } else {
-            b[b.length-1]++;
-        }
-        prev = arr[i];
-    }
-
-    return [a, b];
-}
 
 /**
     Creacion de una orden
@@ -55,31 +28,30 @@ router.post('/create', function(req, res){
 	console.log('creating an order');
 	
  	Order.create({
-							 	ClientDocID : req.body.clientID,
-							 	ClientEmail : req.body.email,
-							 	ClientPhone : req.body.telephone,
-							 	CreditCardType : req.body.card,
-							 	Address : req.body.address,
-								LocalOrder : req.body.localorder,
+							 	clientID : req.body.clientID,
+							 	email : req.body.email,
+							 	telephone : req.body.telephone,
+							 	card : req.body.card,
+							 	address : req.body.address,
+								localorder : req.body.localorder,
  	}).then(function(order){
- 		var arraydish = req.body.dish.split(',').map(Number);
+ 		var arraydish = req.body.dish.map(Number);
 		var Price = 0;
 		
-		Dish.findAll({where: {id: {$in: arraydish}}}).then(function(dishes) {
-		    async.each(dishes, function(dish,cb){
-				order.addDish(dish, {amount: CalculateOcurrence(arraydish, dish.id)});
-				Price += dish.price;
-				
-				cb();
+		async.each(arraydish, function(dishId,cb){
+				Dish.findById(dishId).then(function(dish){
+					order.addDish(dish);
+					Price += dish.price;
+					cb();
+				});
 			},
 			function(){
-				order.Price = Price;
+				order.price = Price;
 				
 				order.save().then(function(order){
 					res.json({message: '¡Orden creada!', orden: order});
 				});
 			});
-		});
  	});
 });
 
@@ -123,8 +95,21 @@ router.use(function(req, res, next) {
 router.get('/getall', function(req, res){
 	console.log('asking all orders');
 	
-	Order.findAll().then(function(orders){
-		res.json(orders);
+	Order.findAll({where: {
+							status:{
+								$lt: 3
+							}
+						}
+	}).then(function(orders) {
+		async.each(orders, function(order,cb){
+			order.getDishes().then(function(dishes){
+				order.dataValues.dishes = JSON.stringify(dishes);
+				cb();
+			});
+			},
+			function(){
+				res.json({orden: orders});
+			});
 	});
 });
 
@@ -135,7 +120,7 @@ router.get('/getall', function(req, res){
 router.get('/status/:orderstatus', function(req, res){
 	console.log('asking all orders with status ' + req.params.orderstatus);
 	
-	Order.findAll({where: {Status: req.params.orderstatus}}).then(function(orders){
+	Order.findAll({where: {status: req.params.orderstatus}}).then(function(orders){
 		res.json(orders);
 	});
 });
@@ -148,7 +133,7 @@ router.put('/:id/:orderstatus', function(req, res){
 	console.log('editing order #' + req.params.id + 'with status ' + req.params.orderstatus);
 	
 	Order.findById(req.params.id).then(function (order) {
-        order.Status = req.params.orderstatus;
+        order.status = req.params.orderstatus;
 			
 		order.save().then(function(order){
 			res.json({message: '¡Estado de orden editado!', order: order});

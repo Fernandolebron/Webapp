@@ -15,6 +15,6 @@ var user = sequelize.define('user', {
   freezeTableName: true // Model tableName will be the same as the model name
 });
 
-user.sync();
+//user.sync();
 
 module.exports = user;

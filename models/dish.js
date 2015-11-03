@@ -15,6 +15,6 @@ var dish = sequelize.define('dish', {
   freezeTableName: true // Model tableName will be the same as the model name
 });
 
-dish.sync();
+//dish.sync();
 
 module.exports = dish;
