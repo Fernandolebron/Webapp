@@ -8,7 +8,7 @@ var port = 8082;
 // Instancia del express
 var app = express();
 var server = app.listen(port);
-var io = require('socket.io').listen(server);
+//var io = require('socket.io').listen(server);
 
 // Referencia del bodyparser
 var bodyParser = require('body-parser');
@@ -34,8 +34,3 @@ console.log('Magic happens on port ' + port);
 // INICIA SERVIDOR
 // =============================================================================
 // app.listen(port);
-
-io.socket.on('connection', function(socket){
-	console.log('A new user connected!');
-	socket.emit('info', {msg: 'The world is round, there is no up or down'});
-});
