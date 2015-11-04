@@ -1,7 +1,7 @@
 var Sequelize = require('sequelize');
 
 // Connección a la BD MySQL
-var sequelize = new Sequelize('mysql://' + process.env.C9_USER + ':@' +  process.env.IP + ':3306/abelinos');
+var sequelize = new Sequelize('mysql://root:123456@localhost:3306/abelinos');
 
 var dish = sequelize.define('dish', {
 	name: {type: Sequelize.STRING(80), allowNull: false},
@@ -15,6 +15,6 @@ var dish = sequelize.define('dish', {
   freezeTableName: true // Model tableName will be the same as the model name
 });
 
-//dish.sync();
+dish.sync();
 
 module.exports = dish;
