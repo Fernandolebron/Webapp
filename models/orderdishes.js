@@ -3,7 +3,7 @@ var Order = require('../models/order');
 var Dish = require('../models/dish');
 
 // Connección a la BD MySQL
-var sequelize = new Sequelize('mysql://' + process.env.C9_USER + ':@' +  process.env.IP + ':3306/abelinos');
+var sequelize = new Sequelize('mysql://root:123456@localhost:9658/abelinos');
 
 var OrdersDish = sequelize.define('OrdersDish', {
     id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true},
