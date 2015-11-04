@@ -1,7 +1,15 @@
 // Referencia del express
-var express    = require('express');
+var express = require('express')
+	, http = require('http');
+
+// Puerto
+var port = 8082;
+
 // Instancia del express
-var app        = express();
+var app = express();
+var server = app.listen(port);
+var io = require('socket.io').listen(server);
+
 // Referencia del bodyparser
 var bodyParser = require('body-parser');
 // Referencia de las rutas de usuarios
@@ -16,15 +24,18 @@ app.set('SecretKey', 'Abelino Resturante');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-// Asigna puerto
-var port = 8082;
-
 // REGISTER OUR ROUTES -------------------------------
 app.use('/user', userRoutes);
 app.use('/dish', dishRoutes);
 app.use('/order', order);
 
+console.log('Magic happens on port ' + port);
+
 // INICIA SERVIDOR
 // =============================================================================
-app.listen(port);
-console.log('Magic happens on port ' + port);
+// app.listen(port);
+
+io.socket.on('connection', function(socket){
+	console.log('A new user connected!');
+	socket.emit('info', {msg: 'The world is round, there is no up or down'});
+});
