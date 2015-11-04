@@ -17,7 +17,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 // Asigna puerto
-var port = 8080;
+var port = 8082;
 
 // REGISTER OUR ROUTES -------------------------------
 app.use('/user', userRoutes);
