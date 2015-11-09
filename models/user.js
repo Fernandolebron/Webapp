@@ -1,7 +1,7 @@
 var Sequelize = require('sequelize');
 
 // Connección a la BD MySQL
-var sequelize = new Sequelize('mysql://root:123456@127.0.0.1:3306/abelinos');
+var sequelize = new Sequelize('mysql://root:123456789@localhost:3306/abelinos');
 
 var user = sequelize.define('user', {
 	username: {type: Sequelize.STRING(20), allowNull: false, unique: true},
