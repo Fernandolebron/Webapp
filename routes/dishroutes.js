@@ -24,6 +24,9 @@ router.get('/dishes', function(req, res){
 router.use(function(req, res, next) {
 	console.log('using dish controller');
 	
+	res.header("Access-Control-Allow-Origin", "*");
+  	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+
 	// check header or url parameters or post parameters for token
 	var token = req.body.token || req.query.token || req.headers['x-access-token'];
 	
