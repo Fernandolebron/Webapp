@@ -11,6 +11,9 @@ var jwt = require('jsonwebtoken');
 */
 router.get('/dishes', function(req, res){
 	console.log('asking all dishes');
+
+	res.header("Access-Control-Allow-Origin", "*");
+  	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 	
 	Dish.findAll().then(function(dishes){
 		res.json(dishes);
@@ -22,10 +25,7 @@ router.get('/dishes', function(req, res){
     @author Jose Reyes
 */
 router.use(function(req, res, next) {
-	console.log('using dish controller');
-	
-	res.header("Access-Control-Allow-Origin", "*");
-  	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+	console.log('using dish controller');	
 
 	// check header or url parameters or post parameters for token
 	var token = req.body.token || req.query.token || req.headers['x-access-token'];
