@@ -12,10 +12,7 @@ var OrdersDishes = require('../models/orderdishes');
     Lista de todos las ordenes a partir del id del cliente.
     @author Jose Reyes
 */
-router.get('/checkstatus/:idclient', function(req, res){
-	res.header("Access-Control-Allow-Origin", "*");
-  	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-	
+router.get('/checkstatus/:idclient', function(req, res){	
 	console.log(res);
 	console.log(req);
 	console.log('asking all orders with id client ' + req.params.idclient);
