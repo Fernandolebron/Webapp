@@ -13,6 +13,9 @@ var OrdersDishes = require('../models/orderdishes');
     @author Jose Reyes
 */
 router.get('/checkstatus/:idclient', function(req, res){
+	res.header("Access-Control-Allow-Origin", "*");
+  	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+	
 	console.log('asking all orders with id client ' + req.params.idclient);
 		
 	Order.findAll({where: {clientID: req.params.idclient}}).then(function(orders){
