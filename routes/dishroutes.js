@@ -10,10 +10,10 @@ var jwt = require('jsonwebtoken');
     @author Jose Reyes
 */
 router.get('/dishes', function(req, res){
-	console.log('asking all dishes');
-
 	res.header("Access-Control-Allow-Origin", "*");
   	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+	
+	console.log('asking all dishes');
 	
 	Dish.findAll().then(function(dishes){
 		res.json(dishes);
