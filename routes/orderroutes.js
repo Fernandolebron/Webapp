@@ -14,8 +14,6 @@ var OrdersDishes = require('../models/orderdishes');
 */
 router.get('/checkstatus/:idclient', function(req, res){
 	req.header("Access-Control-Allow-Origin", "*");
-  	req.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-
 	console.log('asking all orders with id client ' + req.params.idclient);
 	
 	res.header("Access-Control-Allow-Origin", "*");
@@ -68,6 +66,9 @@ router.post('/create', function(req, res){
 router.use(function(req, res, next) {
 	console.log('using order controller');
 	
+	res.header("Access-Control-Allow-Origin", "*");
+  	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+
 	// check header or url parameters or post parameters for token
 	var token = req.body.token || req.query.token || req.headers['x-access-token'];
 	
