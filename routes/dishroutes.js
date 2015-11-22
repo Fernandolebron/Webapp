@@ -10,8 +10,6 @@ var jwt = require('jsonwebtoken');
     @author Jose Reyes
 */
 router.get('/dishes', function(req, res){
-	console.log(req);
-	console.log(res);
 	console.log('asking all dishes');
 	
 	Dish.findAll().then(function(dishes){
