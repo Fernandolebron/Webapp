@@ -16,10 +16,6 @@ router.get('/checkstatus/:idclient', function(req, res){
 	req.header("Access-Control-Allow-Origin", "*");
 	console.log('asking all orders with id client ' + req.params.idclient);
 
-	// CORS
-	res.header("Access-Control-Allow-Origin", "*");
-  	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-
 	Order.findAll({where: {clientID: req.params.idclient}}).then(function(orders){
 		res.json(orders);
 	});
