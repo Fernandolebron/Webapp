@@ -13,7 +13,12 @@ var OrdersDishes = require('../models/orderdishes');
     @author Jose Reyes
 */
 router.get('/checkstatus/:idclient', function(req, res){
+	req.header("Access-Control-Allow-Origin", "*");
 	console.log('asking all orders with id client ' + req.params.idclient);
+
+	// CORS
+	res.header("Access-Control-Allow-Origin", "*");
+  	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 
 	Order.findAll({where: {clientID: req.params.idclient}}).then(function(orders){
 		res.json(orders);
@@ -65,10 +70,6 @@ router.use(function(req, res, next) {
 	// check header or url parameters or post parameters for token
 	var token = req.body.token || req.query.token || req.headers['x-access-token'];
 
-	// CORS
-	res.header("Access-Control-Allow-Origin", "*");
-  	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-	
 	// decode token
 	if (token) {
 		// verifies secret and checks exp
