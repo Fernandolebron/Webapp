@@ -16,7 +16,7 @@ router.get('/checkstatus/:idclient', function(req, res){
 	console.log('asking all orders with id client ' + req.params.idclient);
 		
 	Order.findAll({where: {clientID: req.params.idclient}}).then(function(orders){
-		res.json(orders);
+		res.json(orders[orders.length-1]);
 	});
 });
 
@@ -28,12 +28,12 @@ router.post('/create', function(req, res){
 	console.log('creating an order');
 	
  	Order.create({
-							 	clientID : req.body.clientID,
-							 	email : req.body.email,
-							 	telephone : req.body.telephone,
-							 	card : req.body.card,
-							 	address : req.body.address,
-								localorder : req.body.localorder,
+				 	clientID : req.body.clientID,
+				 	email : req.body.email,
+				 	telephone : req.body.telephone,
+				 	card : req.body.card,
+				 	address : req.body.address,
+					localorder : req.body.localorder,
  	}).then(function(order){
  		var arraydish = req.body.dish.map(Number);
 		var Price = 0;
