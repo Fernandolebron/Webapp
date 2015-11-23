@@ -16,7 +16,7 @@ router.get('/checkstatus/:idclient', function(req, res){
 	console.log('asking all orders with id client ' + req.params.idclient);
 
 	Order.findAll({where: {clientID: req.params.idclient}}).then(function(orders){
-		res.json(orders);
+		res.json(orders[orders.length-1]);
 	});
 });
 
