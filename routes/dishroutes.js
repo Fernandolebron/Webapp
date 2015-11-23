@@ -12,6 +12,10 @@ var jwt = require('jsonwebtoken');
 router.get('/dishes', function(req, res){
 	console.log('asking all dishes');
 	
+	// CORS
+	res.header("Access-Control-Allow-Origin", "*");
+  	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+
 	Dish.findAll().then(function(dishes){
 		res.json(dishes);
 	});
