@@ -26,6 +26,7 @@ router.get('/checkstatus/:idclient', function(req, res){
 */
 router.post('/create', function(req, res){
 	console.log('creating an order');
+	console.log(req.body);
 	
  	Order.create({
 							 	clientID : req.body.clientID,
