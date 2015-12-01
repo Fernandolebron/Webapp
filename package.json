@@ -1,14 +1,17 @@
 {
   "name": "node-api",
+  "version": "1.0.0",
+  "description": "API",
   "main": "server.js",
   "dependencies": {
-    "bcrypt-nodejs": "0.0.3",
-    "body-parser": "~1.0.1",
-    "crypto": "0.0.3",
-    "express": "~4.0.0",
-    "jsonwebtoken": "5.4.0",
-    "mysql": "2.0.0-alpha9",
-    "nodemailer": "1.8.0",
+    "async": "^1.5.0",
+    "bcrypt-nodejs": "^0.0.3",
+    "body-parser": "^1.0.2",
+    "crypto": "^0.0.3",
+    "express": "^4.0.0",
+    "jsonwebtoken": "^5.4.0",
+    "mysql": "^2.0.0-alpha9",
+    "nodemailer": "^1.8.0",
     "sequelize": "^3.13.0"
   }
 }
