@@ -4,11 +4,6 @@ var Dish = require('../models/dish');
 // Connección a la BD MySQL
 var sequelize = new Sequelize('mysql://root:123456789@localhost:3306/abelinos');
 
-var OrdersDish = sequelize.define('OrdersDish', {
-    id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true},
-    status: {type: Sequelize.INTEGER, defaultValue: 1}
-});
-
 var order = sequelize.define('orders', {
 	clientID: {type: Sequelize.STRING(20), allowNull: false},
 	email: {type: Sequelize.STRING(100)},
@@ -22,9 +17,7 @@ var order = sequelize.define('orders', {
 },{
   freezeTableName: true // Model tableName will be the same as the model name
 });
-
 					
 order.sync();
-OrdersDish.sync();
 
 module.exports = order;
