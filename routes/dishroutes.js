@@ -87,9 +87,10 @@ router.post('/create', function(req, res){
     @author Jose Reyes
 */
 router.put('/edit/:id', function(req, res){
+	console.log(req);
 	console.log('editing dish #' + req.params.id);
 	
-	Dish.findById(req.params.id).then(function (dish) {
+	Dish.findById(req.body.id).then(function (dish) {
         dish.name = req.body.name;
 		dish.type = req.body.type;
 		dish.description = req.body.description;

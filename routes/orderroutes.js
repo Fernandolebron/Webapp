@@ -48,7 +48,7 @@ router.post('/create', function(req, res){
 			},
 			function(){
 				order.price = Price;
-				
+				console.log("OK...async");				
 				order.save().then(function(order){
 					res.json({message: '¡Orden creada!', orden: order});
 				});
