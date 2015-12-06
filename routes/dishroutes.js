@@ -68,6 +68,7 @@ router.get('/:id', function(req, res) {
 */
 router.post('/create', function(req, res){
 	console.log('creating a dish');
+	console.log(req.body);
 	
 	Dish.create({
 		name : req.body.name,
