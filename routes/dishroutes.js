@@ -69,7 +69,8 @@ router.get('/:id', function(req, res) {
 router.post('/create', function(req, res){
 	console.log('creating a dish');
 	console.log(req.body);
-	
+	console.log("Cant. de Caracteres " + req.body.image.length);
+
 	Dish.create({
 		name : req.body.name,
 		type : req.body.type,
