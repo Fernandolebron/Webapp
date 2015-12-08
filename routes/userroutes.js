@@ -13,7 +13,7 @@ var nodemailer = require('nodemailer');
 // Referencia al modelo de usuarios
 var User = require('../models/user');
 // Link del cliente web del sistema
-var webresetURL = 'https://abelinorest-gogims.c9.io/';
+var webresetURL = 'http://192.241.167.243:1337/resetPassword/';
 
 /**
     Verifica que el token mandado por el cliente es válido
@@ -52,7 +52,7 @@ router.post('/forgotpassword', function(req, res){
     console.log('asking for reset password ' + req.body.email);
     
     User.findOne({ where: { email: req.body.email}}).then(function(user){
-        if (user != null) {
+        if (user == null) {
           res.json({ success: false, message: '¡Usuario no existe!' });
         }
         else {
@@ -62,10 +62,10 @@ router.post('/forgotpassword', function(req, res){
             
             user.save().then(function(){
         			// create reusable transporter object using SMTP transport
-              var transporter = nodemailer.createTransport({
+              var transporter = nodemailer.createTransport("SMTP", {
                   service: 'Gmail',
                   auth: {
-                      user: 'abelinorestaurante@gmail.com',
+                      user: 'abelinorestauranteRD@gmail.com',
                       pass: 'abelinorestaurante123'
                   }
               });
@@ -77,7 +77,7 @@ router.post('/forgotpassword', function(req, res){
                   from: 'Abelino Restuarante <abelinorestaurante@gmail.com>', // sender address
                   to: user.email, // list of receivers
                   subject: 'Abelino Restuarante: Reset Passoword', // Subject line
-                  text: 'Para resetear su contraseña utilizar este link:' + resetlink, // plaintext body
+                  text: 'Para resetear su contraseña utilizar este link: ' + resetlink, // plaintext body
                   html: 'Para resetear su contraseña utilizar este <a href="' + resetlink + '">link</a>' // html body
               };
               

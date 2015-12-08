@@ -9,7 +9,7 @@
     "express": "~4.0.0",
     "jsonwebtoken": "5.4.0",
     "mysql": "2.0.0-alpha9",
-    "nodemailer": "1.8.0",
+    "nodemailer": "0.7",
     "sequelize": "^3.13.0"
   }
 }
