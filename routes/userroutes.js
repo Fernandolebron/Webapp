@@ -62,7 +62,7 @@ router.post('/forgotpassword', function(req, res){
             
             user.save().then(function(){
         			// create reusable transporter object using SMTP transport
-              var transporter = nodemailer.createTransport({
+              var transporter = nodemailer.createTransport("SMTP",{
                   service: 'Gmail',
                   auth: {
                       user: 'abelinorestauranteRD@gmail.com',
