@@ -13,7 +13,7 @@ var nodemailer = require('nodemailer');
 // Referencia al modelo de usuarios
 var User = require('../models/user');
 // Link del cliente web del sistema
-var webresetURL = 'http://192.241.167.243:1337/resetPassword/';
+var webresetURL = 'http://192.241.167.243:1337/resetPassword?token=';
 
 /**
     Verifica que el token mandado por el cliente es válido
@@ -74,7 +74,7 @@ router.post('/forgotpassword', function(req, res){
               
               // setup e-mail data with unicode symbols
               var mailOptions = {
-                  from: 'Abelino Restuarante <abelinorestaurante@gmail.com>', // sender address
+                  from: 'Abelino Restaurante <abelinorestaurante@gmail.com>', // sender address
                   to: user.email, // list of receivers
                   subject: 'Abelino Restuarante: Reset Passoword', // Subject line
                   text: 'Para resetear su contraseña utilizar este link: ' + resetlink, // plaintext body
